@@ -1,0 +1,22 @@
+version: "3.0"
+
+services:
+  app:
+    image: mahendrshinde/myweb:1
+    networks:
+    - net1
+    ports:
+    - 80
+    deploy:
+      replicas: 2
+
+networks:
+  net1:
+    driver: bridge
+    ipam:
+      config: 
+      - subnet: "152.15.0.0/16"
+
+
+# No Volumes
+# volumes:
