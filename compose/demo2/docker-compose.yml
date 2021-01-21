@@ -11,6 +11,11 @@ services:
       MYSQL_USER: mahendra
       MYSQL_PASSWORD: pass@1234
       MYSQL_DATABASE: hr
+    deploy:
+      resources:
+        limits:
+          cpus : '0.5'
+          memory: '100M' 
 
   adminer:
     image: adminer
