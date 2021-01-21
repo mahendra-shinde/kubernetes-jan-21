@@ -1,5 +1,9 @@
 ## Deploying k8s on AWS using KubeSpray
 
+Recordings:
+[Part1](https://www.youtube.com/watch?v=drzhR3LiCHM)
+[Part2](https://www.youtube.com/watch?v=NHCaqdC8hBI)
+
 1.  You need following
 
     - Ansible
@@ -67,13 +71,13 @@
 
     #Kubernetes Cluster
     aws_kube_master_num  = 1
-    aws_kube_master_size = "t4g.xlarge"
+    aws_kube_master_size = "t2.medium"
 
     aws_etcd_num  = 1
-    aws_etcd_size = "t4g.xlarge"
+    aws_etcd_size = "t2.medium"
 
     aws_kube_worker_num  = 2
-    aws_kube_worker_size = "t4g.xlarge"
+    aws_kube_worker_size = "t2.medium"
 
     #Settings AWS ELB
 
@@ -114,4 +118,12 @@
     $ cd /mnt/c/kubespray/contrib/terraform/aws
     $ terraform init
     $ terraform plan -out=plan1 --var-file=credentials.tfvars
+    ```
+
+12. After successful deployment, a file would be created at `/mnt/c/kubespray/inventory/hosts`
+
+13. Run following command from `/mnt/c/kubespray` location (Wait for 20/30 minutes)
+
+    ```
+    $ ansible-playbook -i inventory/hosts cluster.yml -e ansible_user=ubuntu -b --become_user=root
     ```
