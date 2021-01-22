@@ -1,0 +1,18 @@
+##### Namespaces
+# 1. Logical Boundries for all kubernetes objects like pods, deployments, services ....
+# 2. Each Namespace can be given a seperate rbac and user credentials
+# 3. There is Always a default namespace with name "default"
+# 4. When you deploy a pod "pod1" in default namespace, its fqn becomes "default.pod1"
+
+## filename: myname.yml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mahendra
+
+## Command to deploy and check
+# $ kubectl apply -f myname.yml
+# $ kubectl get ns
+###############################
+
