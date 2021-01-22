@@ -1,0 +1,34 @@
+### Service provides "Stable Network Identity, DNS & Internal Load balancing to PODs"
+## Service-Controller and Endpoint-Controller
+## Endpoint-Controller would keep LOOKING for PODS in Current namespace where "Labels" match "app=app2"
+## All pods where labels were matched, would be added as Backend pool to service
+
+
+# filename:: service1.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  namespace: mahendra
+spec:
+  selector:
+    app: app2
+  ports:
+  - port: 80
+    targetPort: 80
+
+## to deploy on cluster
+## Deploy replicaSet with 3 or 5 replicas
+# $ kubectl apply -f replicaset1.yml
+## deploy the service
+# $ kubectl apply -f service1.yml 
+# $ kubectl get ep -n mahendra
+# $ kubectl describe -f service1.yml
+## TESTING the internal load balancing
+# $ kubectl apply -f pod1.yml
+# $ kubectl exec -it -n mahendra pod1 -- sh
+# $ curl http://myapp
+# $ curl http://myapp
+# $ curl http://myapp
+# $ exit
+### You must get different response in each curl call.
