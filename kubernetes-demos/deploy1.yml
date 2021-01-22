@@ -1,0 +1,63 @@
+### Rolling updates with deployment
+# filename: deploy1.yml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+  namespace: mahendra
+spec:
+  revisionHistoryLimit: 10
+  replicas: 3
+  strategy:
+    rollingUpdate:
+    ## Allow 5 pods instead of 3 while running rollingUpdate
+      maxSurge: 2 
+    ## This would make sure that minimum TWO pods are required 
+      maxUnavailable: 2
+  selector:
+    matchLabels:
+      app: app3
+  template:
+    metadata:
+      labels:
+        app: app3
+    spec:
+      containers:
+      - name: web
+        image: mahendrshinde/myweb:1
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: mahendra
+  name: myapp2
+spec:
+  selector:
+    app: app3
+  ports:
+  - port: 80
+    targetPort: 80
+####
+# $ kubectl apply -f deploy1.yml
+# $ kubectl get deploy -n mahendra
+# $ kubectl get rs -l app=app3 -n mahendra
+### verify app version
+# kubectl get pod -n mahendra pod1
+# If not found, deploy one
+# $ kubectl apply -f pod1.yml
+# $ kubectl exec -n mahendra -it pod1 -- curl http://myapp2
+## Expected "version 1"
+# edit 'deploy1.yml' file and change image to "mahendrshinde/myweb:2"
+# $ kubectl apply -f deploy.yml
+# $ kubectl get rs -l app=app3 -n mahendra
+# $ kubectl exec -n mahendra -it pod1 -- curl http://myapp2
+## Undo last change
+# $ kubectl rollout undo -n mahendra deploy app1
+# $ kubectl exec -n mahendra -it pod1 -- curl http://myapp2
