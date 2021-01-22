@@ -127,3 +127,45 @@ Recordings:
     ```
     $ ansible-playbook -i inventory/hosts cluster.yml -e ansible_user=ubuntu -b --become_user=root
     ```
+
+14. After Successful installation, we need to LOGIN inside the master-node. master-node, worker-node and etcd-node DO NOT HAVE public-ips!
+
+15. To connect via Bastion-node, a new file "ssh-bastion.conf" is created in root directory "/mnt/c/kubespray" Open this file in text editor to verify the Public IP of Bastion node matches with public-ip of bastion node on AWS Console. (IP is mentioned in THREE places)
+
+16. Now, using the SSH Key pair you created earlier to connect with the master node via bastion-node
+
+    ```
+    ## Lets assume ssh key is in downloads folders
+    $ cd /mnt/c/Users/mahendra/Downloads
+    $ cp k8s1.pem ~/.ssh/
+    $ cd ~/.ssh
+    # Set the permission on ssh-key
+    $ chmod 0600 k8s1.pem
+    $ eval $(ssh-agent)
+    $ ssh-add -D
+    $ ssh-add ~/.ssh/k8s1.pem
+    $ ssh-add -L 
+    $ cd /mnt/c/kubespray
+    ### Replace 10.250.200.70 with Private IP of master-0 from AWS CONSOLE
+    $ ssh -F ssh-bastion.conf ubuntu@10.250.200.70
+    ## Copy the default credentials
+    $ mkdir ~/.kube
+    $ sudo cp /etc/kubernetes/admin.conf ~/.kube/config
+    $ sudo chown ubuntu:ubuntu ~/.kube/config
+    $ exit
+    ```
+
+17. Now, download the config from master node to local machine
+
+    ```
+    $ scp -F ssh-bastion.conf ubuntu@10.250.200.70:/home/ubuntu/.kube/config /mnt/c/Users/mahendra/.kube/config2
+    ```
+
+18. Open the downloaded config2 file with text-editor and replace the IP address of master node with DNS of elastic load balancer from aws-console.
+
+19. Open a new command-prompt start using new cluster-config file
+
+    ```
+    $ set KUBECONFIG=c:\users\mahendra\.kube\config2
+    $ kubectl get node
+    ```
