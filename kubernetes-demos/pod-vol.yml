@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvpod
+spec:
+  volumes:
+    - name: vol1
+      persistentVolumeClaim:
+        claimName: pvc
+  containers:
+    - name: test1
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: vol1
+
+## Deploy the PERSISTENT-VOLUME & PERSISTENT_VOLUME_CLAIM
+# $ kubectl apply -f pv.yml
+
+## Deploy the Test pod
+# $ kubectl apply -f pod-vol.yml
+# $ kubectl get pv pvc
+# $ kubectl get pod pvpod
+# $ kubectl exec -it pvpod -- sh
+# $ cd /usr/share/nginx/html
+# $ echo "Hello World " > index.html
+# $ exit
+# kubectl delete po pvpod
+# kubectl apply -f pod-vol.yml
+# $ kubectl exec -it pvpod -- sh
+# $ cd /usr/share/nginx/html
+# $ cat index.html
+### EXPECTED: the file exists and contains 'hello-world'

@@ -1,0 +1,31 @@
+#### POD Single Unit, contains multiple containers. Has unique POD IP
+## filename: pod2.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod2
+  namespace: mahendra
+  labels:
+    name: app4
+spec:
+  containers:
+  - name: myapp
+    image: mahendrshinde/myweb:1
+    envFrom:
+      - secretRef:
+          name: mysecret
+          optional: false
+    resources:
+      limits:
+        memory: "64Mi"
+        cpu: "200m"
+    ports:
+      - containerPort: 80
+## Command to deploy
+# $ kubectl apply -f pod2.yml
+## Verify the pod
+# $ kubectl get po -n mahendra
+# $ kubectl describe -f pod2.yml
+# $ kubectl exec -n mahendra -it pod2 -- sh
+# $ echo "$MYSQL_USER $MYSQL_PASSWORD"
+# $ exit
