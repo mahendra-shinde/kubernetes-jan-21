@@ -1,0 +1,34 @@
+### Adds Scaling and Self Healing to PODS
+# Pods should always be managed by either "replicaset", "statefulset" or "job"
+# filename: replicaset1.yml
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replica1
+  namespace: mahendra
+
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      name: rs1
+      labels:
+        app: app2
+    spec:
+      containers:
+      - image: mahendrshinde/myweb:1
+        name: web
+        ports: 
+        - containerPort: 80
+
+## Command to deploy
+# $ kubectl apply -f replicaset1.yml
+## Verify pods (Use "-l" for selecting pods with labels only)
+# $ kubectl get pod -n mahendra -l app=app2
+## Test self-healing
+# $ kubectl delete po -n mahendra [ANY POD FROM PREVIOUS COMMAND]
+# $ kubectl get po -n mahendra
